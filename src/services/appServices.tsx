@@ -6,7 +6,6 @@ export const getStockData = async (stockSymbol: string) => {
     const response = await axios.get(url); // Replace with your API URL
     const data = response.data;
     // Use the fetched data here
-    console.log(data.chart.result[0])
     return data.chart.result[0];
   } catch (error) {
     console.error(error);

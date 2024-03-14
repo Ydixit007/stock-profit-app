@@ -50,7 +50,7 @@ function App() {
         getTimestampFromDate(buyDate || today)
       )
     );
-    // setSellDate(undefined);
+    setSellDate(undefined);
   }, [buyDate]);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function App() {
       sellIndex >= 0
     ) {
       setProfit(
-        (currentStockData.indicators.quote[0].low[sellIndex] -
+        (currentStockData.indicators.quote[0].high[sellIndex] -
           currentStockData.indicators.quote[0].low[buyIndex]) *
           quantity
       );
@@ -184,7 +184,7 @@ function App() {
                   type="number"
                   value={quantity}
                   onChange={(e) => {
-                    if (Number(e.currentTarget.value) > 0) {
+                    if (Number(e.currentTarget.value) >= 0) {
                       setQuantity(Number(e.currentTarget.value));
                     }
                   }}
