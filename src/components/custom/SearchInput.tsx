@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -7,11 +7,17 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
-import { Button } from "../ui/button";
 import { getStockName } from "@/services/appServices";
 import { useDebounce } from "@/hooks";
+import { GoSearch } from "react-icons/go";
 
-const SearchInput = () => {
+interface SearchInputInterface {
+  setCurrentStock: Dispatch<
+    SetStateAction<{ stockName: string; stockSymbol: string }>
+  >;
+}
+
+const SearchInput = ({ setCurrentStock }: SearchInputInterface) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchData, setSearchData] = useState<any[]>([]);
@@ -27,18 +33,24 @@ const SearchInput = () => {
 
   const getSearch = async () => {
     setSearchData(await getStockName(debouncedSearch));
-    console.log(searchData);
   };
-  
+
+  const setStock = (stockName: string, stockSymbol: string) => {
+    setCurrentStock({
+      stockName: stockName,
+      stockSymbol: stockSymbol,
+    });
+    setOpen(false);
+  };
+
   return (
     <>
-      <Button
+      <GoSearch
+        className="cursor-pointer"
         onClick={() => {
           setOpen(true);
         }}
-      >
-        Search Symbol
-      </Button>
+      />
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
           onChangeCapture={(e) => {
@@ -52,8 +64,14 @@ const SearchInput = () => {
             {searchData &&
               searchData.map((result, index) => {
                 return (
-                  <CommandItem key={index} className="cursor-pointer">
-                    {result.shortname}
+                  <CommandItem
+                    onSelect={() => {
+                      setStock(result.shortname, result.symbol);
+                    }}
+                    key={index}
+                    className="cursor-pointer pointer-events-auto"
+                  >
+                    {`${result.shortname} - ${result.exchDisp}`}
                   </CommandItem>
                 );
               })}
