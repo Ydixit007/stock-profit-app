@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getStockData = async (stockSymbol: string) => {
-  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${stockSymbol}?region=in&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=1mo&corsDomain=finance.yahoo.com&.tsrc=finance`;
+  const url = `api/v8/finance/chart/${stockSymbol}?region=in&lang=en-US&includePrePost=false&interval=1d&useYfid=true&range=1mo&corsDomain=finance.yahoo.com&.tsrc=finance`;
   try {
     const response = await axios.get(url); // Replace with your API URL
     const data = response.data;
@@ -15,7 +15,7 @@ export const getStockData = async (stockSymbol: string) => {
 
 export const getStockName = async (query: string) => {
   if (query !== "") {
-    const url = `https://query1.finance.yahoo.com/v1/finance/search?q=${query}`;
+    const url = `api/v1/finance/search?q=${query}`;
     try {
       const response = await axios.get(url); // Replace with your API URL
       const data = response.data.quotes || [];
