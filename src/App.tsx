@@ -81,7 +81,7 @@ function App() {
   }, [buyIndex, sellIndex, quantity]);
 
   return (
-    <div className="h-screen w-full py-6 flex justify-center items-center">
+    <div className="h-[100svh] w-full py-6 flex justify-center items-center">
       <Card className="h-full w-full max-sm:border-none max-w-[356px] px-4 py-4 flex flex-col gap-2 items-center relative">
         <div className="heading w-full flex justify-between items-center px-4 border-border border-b-[1px] pb-2">
           <h1 className="text-lg font-medium">Swing Profit</h1>
