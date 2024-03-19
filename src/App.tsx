@@ -18,6 +18,7 @@ function App() {
   const [sellIndex, setSellIndex] = useState<number>();
   const [quantity, setQuantity] = useState<number>(20);
   const [profit, setProfit] = useState<number>(0);
+  const [openDate, setOpenDate] = useState<Date>(new Date());
 
   const initDate = new Date();
   initDate.setDate(initDate.getDate() - 30);
@@ -38,8 +39,12 @@ function App() {
   }, [currentStock]);
 
   const convertDateToCorrectTimestamp = (date: Date | undefined) => {
-    date?.setHours(9, 15, 0, 0);
+    date?.setHours(openDate.getHours(), openDate.getMinutes(), 0, 0);
   };
+
+  useEffect(() => {
+    initDate.setHours(openDate.getHours(), openDate.getMinutes(), 0, 0);
+  }, [openDate]);
 
   useEffect(() => {
     const today = new Date();
@@ -47,9 +52,16 @@ function App() {
     convertDateToCorrectTimestamp(today);
     setBuyIndex(
       currentStockData?.timestamp.indexOf(
-        getTimestampFromDate(buyDate || today)
-      )
+        getTimestampFromDate(buyDate || today),
+      ),
     );
+    if (currentStockData !== undefined) {
+      setOpenDate(
+        new Date(
+          currentStockData!.meta.currentTradingPeriod.regular.start * 1000,
+        ),
+      );
+    }
     setSellDate(undefined);
   }, [buyDate]);
 
@@ -59,8 +71,8 @@ function App() {
     convertDateToCorrectTimestamp(today);
     setSellIndex(
       currentStockData?.timestamp.indexOf(
-        getTimestampFromDate(sellDate || today)
-      )
+        getTimestampFromDate(sellDate || today),
+      ),
     );
   }, [sellDate]);
 
@@ -75,7 +87,7 @@ function App() {
       setProfit(
         (currentStockData.indicators.quote[0].high[sellIndex] -
           currentStockData.indicators.quote[0].low[buyIndex]) *
-          quantity
+          quantity,
       );
     }
   }, [buyIndex, sellIndex, quantity]);
@@ -89,7 +101,7 @@ function App() {
         </div>
         {!currentStockData && (
           <div className="w-full h-full flex justify-center items-center">
-            Search for a stock to start!
+            Search for a stock to analyse profits!
           </div>
         )}
         {currentStockData && (
@@ -206,7 +218,15 @@ function App() {
                       Total {profit > 0 ? "profit" : "loss"} :{" "}
                       {profit.toFixed(2)}
                     </h2>
-                    {buyIndex && <p className="text-xs text-gray-400">on an investment of {currentStockData.meta.currency} {(currentStockData.indicators.quote[0].low[buyIndex]* quantity).toFixed(2)}</p>}
+                    {buyIndex && (
+                      <p className="text-xs text-gray-400">
+                        on an investment of {currentStockData.meta.currency}{" "}
+                        {(
+                          currentStockData.indicators.quote[0].low[buyIndex] *
+                          quantity
+                        ).toFixed(2)}
+                      </p>
+                    )}
                   </div>
                 </div>
               )}
